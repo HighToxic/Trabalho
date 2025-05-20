@@ -20,7 +20,7 @@ cursor.execute('''
 ''')
 
 # Insere 20 clientes fictícios
-for _ in range(20):
+for _ in range(500):
     nome = fake.name()
     email = fake.email()
     saldo = round(random.uniform(500.00, 10000.00), 2)
@@ -29,4 +29,4 @@ for _ in range(20):
 conn.commit()
 conn.close()
 
-print("Banco de dados criado com sucesso com 20 clientes fictícios!")
+print("Banco de dados criado com sucesso com clientes fictícios!")
