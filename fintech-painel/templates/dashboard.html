@@ -43,7 +43,11 @@
                         <a href="{{ url_for('editar_cliente', id=c[0], pagina=pagina) }}">
                             <button class="btn-warning">✏️</button>
                         </a>
-                        <a href="#" class="btn-danger" onclick="abrirConfirmacao({{ c[0] }}, '{{ url_for('excluir_cliente', id=c[0], pagina=pagina) }}')">🗑️</a>
+                        <a href="#" 
+                            class="btn-danger" 
+                            data-id="{{ c[0] }}" 
+                            data-url="{{ url_for('excluir_cliente', id=c[0], pagina=pagina) }}" 
+                            onclick="abrirConfirmacao(this)">🗑️</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -72,27 +76,28 @@
 <script>
     let urlExcluir = "";
 
-    function abrirConfirmacao(id, url) {
-        urlExcluir = url;
-        document.getElementById("modal-confirmacao").style.display = "block";
-    }
+function abrirConfirmacao(element) {
+    const url = element.getAttribute('data-url');
+    urlExcluir = url;
+    document.getElementById("modal-confirmacao").style.display = "block";
+}
 
-    function confirmarExclusao() {
-        window.location.href = urlExcluir;
-    }
+function confirmarExclusao() {
+    window.location.href = urlExcluir;
+}
 
-    function fecharModal() {
-        document.getElementById("modal-confirmacao").style.display = "none";
-        urlExcluir = "";
-    }
+function fecharModal() {
+    document.getElementById("modal-confirmacao").style.display = "none";
+    urlExcluir = "";
+}
 
-    // Fechar ao clicar fora do modal
-    window.onclick = function(event) {
-        const modal = document.getElementById("modal-confirmacao");
-        if (event.target === modal) {
-            fecharModal();
-        }
+// Fechar ao clicar fora do modal
+window.onclick = function(event) {
+    const modal = document.getElementById("modal-confirmacao");
+    if (event.target === modal) {
+        fecharModal();
     }
+}
 </script>
 
 </body>
