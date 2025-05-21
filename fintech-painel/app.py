@@ -34,25 +34,34 @@ def dashboard():
         return redirect(url_for('login'))
 
     pagina = int(request.args.get('pagina', 1))
+    busca = request.args.get('busca', '').strip()  # pega o termo de busca da URL
     por_pagina = 20
     offset = (pagina - 1) * por_pagina
 
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
-    # Pegando clientes da página atual
-    cursor.execute("SELECT * FROM clientes LIMIT ? OFFSET ?", (por_pagina, offset))
-    clientes = cursor.fetchall()
+    if busca:
+        # Conta total clientes filtrados pelo nome
+        cursor.execute("SELECT COUNT(*) FROM clientes WHERE nome LIKE ?", (f'%{busca}%',))
+        total_clientes = cursor.fetchone()[0]
 
-    # Contando total de clientes
-    cursor.execute("SELECT COUNT(*) FROM clientes")
-    total_clientes = cursor.fetchone()[0]
+        # Pega clientes filtrados para a página atual
+        cursor.execute("SELECT * FROM clientes WHERE nome LIKE ? LIMIT ? OFFSET ?", (f'%{busca}%', por_pagina, offset))
+    else:
+        # Conta total clientes sem filtro
+        cursor.execute("SELECT COUNT(*) FROM clientes")
+        total_clientes = cursor.fetchone()[0]
+
+        # Pega clientes sem filtro para a página atual
+        cursor.execute("SELECT * FROM clientes LIMIT ? OFFSET ?", (por_pagina, offset))
+
+    clientes = cursor.fetchall()
     total_paginas = (total_clientes + por_pagina - 1) // por_pagina
 
     conn.close()
 
-    return render_template('dashboard.html', clientes=clientes, pagina=pagina, total_paginas=total_paginas)
-
+    return render_template('dashboard.html', clientes=clientes, pagina=pagina, total_paginas=total_paginas, busca=busca)
 
 @app.route('/novo', methods=['GET', 'POST'])
 def novo_cliente():

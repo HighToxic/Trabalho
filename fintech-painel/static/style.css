@@ -239,3 +239,44 @@ tr:hover {
     font-weight: bold;
     cursor: default;
 }
+
+.search-form {
+  display: flex;
+  align-items: center;    /* centraliza verticalmente */
+  gap: 8px;               /* espaço entre input e botão */
+  max-width: 400px;
+}
+
+.search-form input[type="text"],
+.search-form button {
+  margin: 0;
+  padding: 0 12px;
+  height: 36px;
+  box-sizing: border-box;
+  font-size: 16px;
+  line-height: 36px;  /* igual a altura para alinhamento */
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}
+.search-form input[type="text"] {
+  flex: 1;                /* ocupa o máximo espaço possível */
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+}
+
+.search-form button {
+  padding: 0 14px;
+  border: none;
+  background-color: #0d47a1;
+  color: white;
+  cursor: pointer;
+  line-height: 36px; /* importante para centralizar verticalmente */
+  display: inline-block; /* ou flex, mas aí cuida do alinhamento */
+  vertical-align: middle;
+}
+
+
+.search-form button:hover {
+  background-color: #1565c0;
+}
