@@ -33,13 +33,26 @@ def dashboard():
     if 'user' not in session:
         return redirect(url_for('login'))
 
+    pagina = int(request.args.get('pagina', 1))
+    por_pagina = 20
+    offset = (pagina - 1) * por_pagina
+
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM clientes")
+
+    # Pegando clientes da página atual
+    cursor.execute("SELECT * FROM clientes LIMIT ? OFFSET ?", (por_pagina, offset))
     clientes = cursor.fetchall()
+
+    # Contando total de clientes
+    cursor.execute("SELECT COUNT(*) FROM clientes")
+    total_clientes = cursor.fetchone()[0]
+    total_paginas = (total_clientes + por_pagina - 1) // por_pagina
+
     conn.close()
 
-    return render_template('dashboard.html', clientes=clientes)
+    return render_template('dashboard.html', clientes=clientes, pagina=pagina, total_paginas=total_paginas)
+
 
 @app.route('/novo', methods=['GET', 'POST'])
 def novo_cliente():
@@ -56,7 +69,7 @@ def novo_cliente():
         cursor.execute("INSERT INTO clientes (nome, email, saldo) VALUES (?, ?, ?)", (nome, email, saldo))
         conn.commit()
         conn.close()
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard', pagina=request.args.get('pagina', 1)))
 
     return render_template('form_cliente.html', acao='Criar', cliente=None)
 
@@ -75,7 +88,7 @@ def editar_cliente(id):
         cursor.execute("UPDATE clientes SET nome=?, email=?, saldo=? WHERE id=?", (nome, email, saldo, id))
         conn.commit()
         conn.close()
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard', pagina=request.args.get('pagina', 1)))
 
     cursor.execute("SELECT * FROM clientes WHERE id=?", (id,))
     cliente = cursor.fetchone()
@@ -92,7 +105,7 @@ def excluir_cliente(id):
     cursor.execute("DELETE FROM clientes WHERE id=?", (id,))
     conn.commit()
     conn.close()
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('dashboard', pagina=request.args.get('pagina', 1)))
 
 # Função para inicializar o banco de dados
 def init_db():

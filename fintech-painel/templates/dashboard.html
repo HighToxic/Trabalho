@@ -35,10 +35,10 @@
                     <td>{{ c[2] }}</td>
                     <td>R$ {{ c[3] }}</td>
                     <td>
-                        <a href="{{ url_for('editar_cliente', id=c[0]) }}">
+                        <a href="{{ url_for('editar_cliente', id=c[0], pagina=pagina) }}">
                             <button class="btn-warning">✏️</button>
                         </a>
-                        <a href="{{ url_for('excluir_cliente', id=c[0]) }}" onclick="return confirm('Tem certeza que deseja excluir?')">
+                        <a href="{{ url_for('excluir_cliente', id=c[0], pagina=pagina) }}" onclick="return confirm('Tem certeza que deseja excluir?')">
                             <button class="btn-danger">🗑️</button>
                         </a>
                     </td>
@@ -46,6 +46,15 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div class="paginacao">
+    {% for p in range(1, total_paginas + 1) %}
+        {% if p == pagina %}
+            <span class="ativo">{{ p }}</span>
+        {% else %}
+            <a href="{{ url_for('dashboard', pagina=p) }}">{{ p }}</a>
+        {% endif %}
+    {% endfor %}
+</div>
     </div>
 </body>
 </html>

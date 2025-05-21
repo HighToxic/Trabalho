@@ -192,3 +192,50 @@ tr:hover {
     margin-bottom: 20px;
 }
 
+.paginacao a {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    margin: 0 3px;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.paginacao a:hover {
+    background-color: #e0e0e0;
+}
+
+.paginacao strong {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 4px;
+}
+.paginacao {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.paginacao a, .paginacao span {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 6px 12px;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.paginacao a:hover {
+    background-color: #e0e0e0;
+}
+
+.paginacao .ativo {
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #4CAF50;
+    font-weight: bold;
+    cursor: default;
+}

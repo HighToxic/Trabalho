@@ -21,7 +21,7 @@
             </div>
             <div style="display: flex; justify-content: space-between; margin-top: 20px;">
                 <input type="submit" value="{{ acao }}" class="btn-primary full-width" style="margin-right: 10px;">
-                <a href="{{ url_for('dashboard') }}" class="btn-warning full-width" style="text-align: center; padding: 12px;">Cancelar</a>
+                <a href="{{ url_for('dashboard', pagina=request.args.get('pagina', 1)) }}" class="btn-warning full-width" style="text-align: center; padding: 12px;">Cancelar</a>
             </div>
         </form>
     </div>
