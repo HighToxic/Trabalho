@@ -35,7 +35,7 @@ def dashboard():
 
     pagina = int(request.args.get('pagina', 1))
     busca = request.args.get('busca', '').strip()  # pega o termo de busca da URL
-    por_pagina = 20
+    por_pagina = 25
     offset = (pagina - 1) * por_pagina
 
     conn = sqlite3.connect('database.db')

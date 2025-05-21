@@ -3,8 +3,6 @@
 <head>
     <title>Dashboard - SafeBankTech</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 <body>
     <div class="container" style="max-width: 90%; margin-top: 40px;">
@@ -45,9 +43,7 @@
                         <a href="{{ url_for('editar_cliente', id=c[0], pagina=pagina) }}">
                             <button class="btn-warning">✏️</button>
                         </a>
-                        <a href="{{ url_for('excluir_cliente', id=c[0], pagina=pagina) }}" onclick="return confirm('Tem certeza que deseja excluir?')">
-                            <button class="btn-danger">🗑️</button>
-                        </a>
+                        <a href="#" class="btn-danger" onclick="abrirConfirmacao({{ c[0] }}, '{{ url_for('excluir_cliente', id=c[0], pagina=pagina) }}')">🗑️</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -63,5 +59,41 @@
     {% endfor %}
 </div>
     </div>
+<div id="modal-confirmacao" class="modal">
+  <div class="modal-conteudo">
+    <h3>❗ Confirmar Exclusão</h3>
+    <p>Tem certeza que deseja excluir este cliente?</p>
+    <div class="modal-botoes">
+      <button onclick="confirmarExclusao()" class="btn-danger">Excluir</button>
+      <button onclick="fecharModal()" class="btn-warning">Cancelar</button>
+    </div>
+  </div>
+</div>
+<script>
+    let urlExcluir = "";
+
+    function abrirConfirmacao(id, url) {
+        urlExcluir = url;
+        document.getElementById("modal-confirmacao").style.display = "block";
+    }
+
+    function confirmarExclusao() {
+        window.location.href = urlExcluir;
+    }
+
+    function fecharModal() {
+        document.getElementById("modal-confirmacao").style.display = "none";
+        urlExcluir = "";
+    }
+
+    // Fechar ao clicar fora do modal
+    window.onclick = function(event) {
+        const modal = document.getElementById("modal-confirmacao");
+        if (event.target === modal) {
+            fecharModal();
+        }
+    }
+</script>
+
 </body>
 </html>
