@@ -6,14 +6,16 @@ body {
 }
 
 .container {
-    max-width: 400px;
-    margin: 80px auto;
-    background-color: #ffffff;
-    padding: 40px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    border-radius: 12px;
-    text-align: center;
+  width: 90%;
+  max-width: 600px;
+  margin: 40px auto;
+  background-color: #ffffff;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  text-align: center;
 }
+
 
 h2 {
     margin-bottom: 30px;
@@ -173,7 +175,7 @@ tr:hover {
 }
 
 .input-group input {
-    width: 100%;
+    width: 90%;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -279,4 +281,46 @@ tr:hover {
 
 .search-form button:hover {
   background-color: #1565c0;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 16px;
+    margin: 20px auto;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  .input-group input,
+  .btn-primary,
+  .btn-warning,
+  .btn-danger {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .tabela-moderna {
+    font-size: 14px;
+  }
+
+  .tabela-moderna th, .tabela-moderna td {
+    padding: 10px 8px;
+  }
+
+  .paginacao {
+    flex-wrap: wrap;
+  }
+
+  .search-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .search-form input[type="text"],
+  .search-form button {
+    width: 100%;
+  }
 }
