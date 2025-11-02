@@ -6,13 +6,21 @@
 </head>
 <body>
     <div class="container" style="max-width: 90%; margin-top: 40px;">
+        <!-- CABEÇALHO ATUALIZADO COM BOTÃO SAIR -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <div class="brand" style="font-size: 28px;">
                 🛡️ SafeBankTech
             </div>
-            <a href="{{ url_for('novo_cliente') }}">
-                <button class="btn-primary">+ Novo Cliente</button>
-            </a>
+            <!-- Wrapper para os botões da direita -->
+            <div style="display: flex; gap: 10px;">
+                <a href="{{ url_for('novo_cliente') }}">
+                    <button class="btn-primary">+ Novo Cliente</button>
+                </a>
+                <a href="{{ url_for('logout') }}">
+                    <!-- Usando btn-secondary para diferenciar (definido no seu style.css) -->
+                    <button class="btn-secondary">Sair ➔</button> 
+                </a>
+            </div>
         </div>
 
         <h2 style="text-align: left; color: #333;">Painel de Clientes</h2>
@@ -35,6 +43,14 @@
             <tbody>
                 {% for c in clientes %}
                 <tr>
+                    <!--
+                        Nota: Estamos usando c[0], c[1] etc. porque
+                        o app.py usa conn.row_factory = sqlite3.Row.
+                        Para usar c['nome'], c['email'] etc.,
+                        teríamos que garantir que o app.py *sempre*
+                        use o row_factory em *todas* as consultas,
+                        o que é uma boa prática.
+                    -->
                     <td>{{ c[0] }}</td>
                     <td>{{ c[1] }}</td>
                     <td>{{ c[2] }}</td>
@@ -44,35 +60,39 @@
                             <button class="btn-warning">✏️</button>
                         </a>
                         <a href="#" 
-                            class="btn-danger" 
-                            data-id="{{ c[0] }}" 
-                            data-url="{{ url_for('excluir_cliente', id=c[0], pagina=pagina) }}" 
-                            onclick="abrirConfirmacao(this)">🗑️</a>
+                           class="btn-danger" 
+                           data-id="{{ c[0] }}" 
+                           data-url="{{ url_for('excluir_cliente', id=c[0], pagina=pagina) }}" 
+                           onclick="abrirConfirmacao(this)">🗑️</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        
         <div class="paginacao">
-    {% for p in range(1, total_paginas + 1) %}
-        {% if p == pagina %}
-            <span class="ativo">{{ p }}</span>
-        {% else %}
-            <a href="{{ url_for('dashboard', pagina=p, busca=busca) }}">{{ p }}</a>
-        {% endif %}
-    {% endfor %}
-</div>
+            {% for p in range(1, total_paginas + 1) %}
+                {% if p == pagina %}
+                    <span class="ativo">{{ p }}</span>
+                {% else %}
+                    <a href="{{ url_for('dashboard', pagina=p, busca=busca) }}">{{ p }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
-<div id="modal-confirmacao" class="modal">
-  <div class="modal-conteudo">
-    <h3>❗ Confirmar Exclusão</h3>
-    <p>Tem certeza que deseja excluir este cliente?</p>
-    <div class="modal-botoes">
-      <button onclick="confirmarExclusao()" class="btn-danger">Excluir</button>
-      <button onclick="fecharModal()" class="btn-warning">Cancelar</button>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="modal-confirmacao" class="modal">
+      <div class="modal-conteudo">
+        <h3>❗ Confirmar Exclusão</h3>
+        <p>Tem certeza que deseja excluir este cliente?</p>
+        <div class="modal-botoes">
+          <button onclick="confirmarExclusao()" class="btn-danger">Excluir</button>
+          <button onclick="fecharModal()" class="btn-warning">Cancelar</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+
 <script>
     let urlExcluir = "";
 
