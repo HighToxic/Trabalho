@@ -142,12 +142,14 @@ tr:hover {
 
 /* Tela de login moderna */
 .login-container {
-    height: 100vh;
+    min-height: 100vh; /* Garante altura total */
     display: flex;
     justify-content: center;
     align-items: center;
     background: linear-gradient(to right, #0d47a1, #1976d2);
     font-family: 'Segoe UI', sans-serif;
+    padding: 20px; /* Adiciona padding para telas pequenas */
+    box-sizing: border-box;
 }
 
 .login-box {
@@ -158,6 +160,7 @@ tr:hover {
     width: 100%;
     max-width: 400px;
     text-align: center;
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
 }
 
 .login-box h2 {
@@ -175,12 +178,14 @@ tr:hover {
     margin-bottom: 20px;
 }
 
+/* Corrigido: Input agora usa 100% da largura do container */
 .input-group input {
-    width: 80%;
+    width: 100%; /* Era 80% */
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 16px;
+    box-sizing: border-box; /* Importante para o width 100% */
 }
 
 .full-width {
@@ -338,7 +343,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: #f4f6f8; /* ou a cor geral do fundo do seu site */
+    /* background-color: #f4f6f8; */ /* Removido para o gradiente da tela de login funcionar */
 }
 
 .centralizado-vertical {
@@ -371,9 +376,114 @@ html, body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-.modal-botoes {
+.modal-botes {
     margin-top: 20px;
     display: flex;
     justify-content: center;
     gap: 10px;
 }
+
+
+/* --- NOVOS ESTILOS PARA PAINEL DE SEGURANÇA --- */
+/* (Adicionados ao seu CSS original) */
+
+/* Wrapper para o login e painel de segurança */
+.login-box-wrapper {
+    width: 100%;
+    max-width: 400px; /* Mesma largura do .login-box */
+}
+
+/* Mensagens de Feedback (Flash) */
+.flash-msg {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.flash-success { /* Modo Seguro (verde) */
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+/*
+ *
+ * --- ALTERAÇÃO FEITA AQUI ---
+ *
+ */
+.flash-warning { /* Modo Inseguro (agora vermelho) */
+    background-color: #ffcdd2; /* Cor de fundo vermelha clara (do .erro-msg) */
+    color: #b71c1c; /* Cor do texto vermelha escura (do .erro-msg) */
+    border-color: #ef9a9a; /* Cor da borda vermelha mais suave */
+}
+
+/* Painel de controle de segurança */
+.security-box {
+    background-color: #f8f9fa; /* Um cinza bem claro */
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+    text-align: left;
+    margin-top: 20px;
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+}
+
+.security-box p {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #495057;
+    font-size: 16px;
+}
+
+.mode-seguro {
+    font-weight: 700;
+    color: #28a745; /* Verde */
+}
+
+.mode-inseguro {
+    font-weight: 700;
+    color: #d32f2f; /* Vermelho (da sua classe .btn-danger) */
+}
+
+/* Botão secundário (para alternar modo) */
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Caixa de instruções de teste */
+.info-box {
+    font-size: 14px;
+    color: #6c757d;
+    background-color: #e9ecef;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    line-height: 1.6;
+}
+.info-box p {
+    margin: 5px 0;
+}
+.info-box code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    background-color: #dde1e4;
+    padding: 3px 6px;
+    border-radius: 4px;
+    color: #c7254e; /* Um rosa escuro para destaque */
+    font-size: 13px;
+}
+
