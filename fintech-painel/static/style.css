@@ -5,117 +5,253 @@ body {
     padding: 0;
 }
 
+/* --- LAYOUT GERAL --- */
 .container {
   width: 90%;
-  max-width: 600px;
+  max-width: 800px;
   margin: 40px auto;
   background-color: #ffffff;
   padding: 20px;
   box-shadow: 0 0 15px rgba(0,0,0,0.1);
   border-radius: 12px;
   text-align: center;
-  margin: 40px auto;
 }
 
+.centralizado-vertical {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f6f8;
+    padding: 20px;
+    box-sizing: border-box;
+}
 
+/* --- TIPOGRAFIA E ELEMENTOS BÁSICOS --- */
 h2 {
     margin-bottom: 30px;
     color: #0d47a1;
-}
-
-input[type="text"],
-input[type="password"] {
-    width: 90%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-input[type="submit"] {
-    background-color: #0d47a1;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s;
-}
-
-input[type="submit"]:hover {
-    background-color: #1565c0;
-}
-
-table {
-    width: 90%;
-    margin: 40px auto;
-    border-collapse: collapse;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
-}
-
-th, td {
-    padding: 12px 16px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background-color: #0d47a1;
-    color: white;
-}
-
-tr:hover {
-    background-color: #f1f1f1;
 }
 
 .brand {
     font-size: 28px;
     font-weight: bold;
     color: #0d47a1;
+    margin-bottom: 0;
+}
+
+/* --- INPUTS --- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.input-group {
     margin-bottom: 20px;
 }
 
-/* Botões modernos */
+/* --- BOTÕES --- */
+.btn-primary, .btn-secondary, .btn-warning, .btn-danger, .btn-toggle {
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
 .btn-primary {
     background-color: #0d47a1;
     color: white;
-    padding: 10px 20px;
-    border: none;
+    padding: 12px 25px;
     border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: 0.3s;
+    font-size: 16px;
 }
+.btn-primary:hover { background-color: #1565c0; }
 
-.btn-primary:hover {
-    background-color: #1565c0;
+.btn-secondary {
+    background-color: #455a64;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
 }
+.btn-secondary:hover { background-color: #37474f; }
 
 .btn-warning {
     background-color: #ffa000;
     color: white;
-    border: none;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
     margin-right: 4px;
 }
+.btn-warning:hover { background-color: #ff8f00; }
 
 .btn-danger {
     background-color: #d32f2f;
     color: white;
-    border: none;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 6px;
-    font-size: 14px;
+}
+.btn-danger:hover { background-color: #c62828; }
+
+.full-width { width: 100%; }
+
+/* --- BOTÃO GOOGLE (NOVO) --- */
+.btn-google {
+    background-color: white;
+    color: #757575;
+    border: 1px solid #ddd;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.btn-google:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+.google-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    vertical-align: middle;
 }
 
-/* Tabela com visual moderno */
+/* --- LOGIN --- */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0d47a1, #1976d2);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.login-box-wrapper {
+    width: 100%;
+    max-width: 380px;
+}
+
+.login-box {
+    background-color: white;
+    padding: 40px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-box h2 { margin-bottom: 5px; font-size: 28px; }
+.login-subtitle { color: #666; margin-bottom: 25px; }
+
+.login-divider {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    color: #999;
+    font-size: 14px;
+}
+.login-divider hr {
+    flex-grow: 1;
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 0 10px;
+}
+/* --- PAINEL DE SEGURANÇA (ATUALIZADO) --- */
+.security-box {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.security-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    color: #333;
+    font-weight: 500;
+}
+
+.badge-inseguro {
+    color: #d32f2f;
+    font-weight: bold;
+    background: #ffebee;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.badge-seguro {
+    color: #2e7d32;
+    font-weight: bold;
+    background: #e8f5e9;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.btn-toggle {
+    background-color: #607d8b;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+}
+.btn-toggle:hover { background-color: #546e7a; }
+
+.security-instructions {
+    margin-top: 15px;
+    text-align: left;
+    background: #fff3e0;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #e65100;
+    border-left: 4px solid #ff9800;
+}
+.security-instructions p { margin: 5px 0 0 0; }
+.security-instructions code {
+    background-color: rgba(255,255,255,0.5);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+/* --- DASHBOARD --- */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.header-actions { display: flex; gap: 10px; }
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    max-width: 100%;
+}
+.search-input { flex: 1; }
+
+/* --- TABELA --- */
 .tabela-moderna {
     width: 100%;
     border-collapse: collapse;
@@ -123,237 +259,57 @@ tr:hover {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-top: 20px;
 }
-
-.tabela-moderna thead {
-    background-color: #0d47a1;
-    color: white;
-}
-
 .tabela-moderna th, .tabela-moderna td {
-    padding: 14px 18px;
+    padding: 14px 15px;
     text-align: left;
     border-bottom: 1px solid #eee;
 }
+.tabela-moderna thead { background-color: #0d47a1; color: white; }
+.tabela-moderna tbody tr:hover { background-color: #f8f9fa; }
 
-.tabela-moderna tbody tr:hover {
-    background-color: #f4f4f4;
-}
-
-/* Tela de login moderna */
-.login-container {
-    min-height: 100vh; /* Garante altura total */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(to right, #0d47a1, #1976d2);
-    font-family: 'Segoe UI', sans-serif;
-    padding: 20px; /* Adiciona padding para telas pequenas */
-    box-sizing: border-box;
-}
-
-.login-box {
-    background-color: white;
-    padding: 40px;
-    border-radius: 14px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    box-sizing: border-box; /* Garante que o padding não quebre o layout */
-}
-
-.login-box h2 {
-    margin-bottom: 5px;
-    font-size: 28px;
-    color: #0d47a1;
-}
-
-.login-subtitle {
-    color: #666;
-    margin-bottom: 30px;
-}
-
-.input-group {
-    margin-bottom: 20px;
-}
-
-/* Corrigido: Input agora usa 100% da largura do container */
-.input-group input {
-    width: 100%; /* Era 80% */
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    box-sizing: border-box; /* Importante para o width 100% */
-}
-
-.full-width {
-    width: 100%;
-}
-
-.erro-msg {
-    background-color: #ffcdd2;
-    color: #b71c1c;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 20px;
-}
-
-.paginacao a {
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    margin: 0 3px;
-    border-radius: 4px;
-    background-color: #f8f8f8;
-    color: #333;
-}
-
-.paginacao a:hover {
-    background-color: #e0e0e0;
-}
-
-.paginacao strong {
-    padding: 5px 10px;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 4px;
-}
-.paginacao {
-    margin-top: 20px;
-    text-align: center;
-}
-
+/* --- PAGINAÇÃO --- */
+.paginacao { margin-top: 30px; text-align: center; }
 .paginacao a, .paginacao span {
     display: inline-block;
-    margin: 0 5px;
-    padding: 6px 12px;
+    margin: 0 3px;
+    padding: 8px 12px;
     text-decoration: none;
     color: #333;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s, color 0.3s;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    transition: all 0.2s;
 }
-
-.paginacao a:hover {
-    background-color: #e0e0e0;
-}
-
+.paginacao a:hover { background-color: #e0e0e0; border-color: #ccc; }
 .paginacao .ativo {
-    background-color: #4CAF50;
+    background-color: #0d47a1;
     color: white;
-    border: 1px solid #4CAF50;
+    border-color: #0d47a1;
     font-weight: bold;
     cursor: default;
 }
 
-.search-form {
-  display: flex;
-  align-items: center;    /* centraliza verticalmente */
-  gap: 8px;               /* espaço entre input e botão */
-  max-width: 400px;
+/* --- MENSAGENS E MODAIS --- */
+.erro-msg {
+    background-color: #ffcdd2;
+    color: #b71c1c;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-.search-form input[type="text"],
-.search-form button {
-  margin: 0;
-  padding: 0 12px;
-  height: 36px;
-  box-sizing: border-box;
-  font-size: 16px;
-  line-height: 36px;  /* igual a altura para alinhamento */
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  vertical-align: middle;
+.flash-msg {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
 }
-.search-form input[type="text"] {
-  flex: 1;                /* ocupa o máximo espaço possível */
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-}
-
-.search-form button {
-  padding: 0 14px;
-  border: none;
-  background-color: #0d47a1;
-  color: white;
-  cursor: pointer;
-  line-height: 36px; /* importante para centralizar verticalmente */
-  display: inline-block; /* ou flex, mas aí cuida do alinhamento */
-  vertical-align: middle;
-}
-
-
-.search-form button:hover {
-  background-color: #1565c0;
-}
-
-/* Responsividade para o dashboard */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-        padding: 20px;
-        margin: 20px auto;
-        box-shadow: none;
-        margin: 40px auto;
-    }
-
-    .tabela-moderna {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-
-    .tabela-moderna th, .tabela-moderna td {
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    .brand {
-        font-size: 24px;
-        text-align: center;
-        margin-bottom: 10px;
-    }
-
-    h2 {
-        font-size: 20px;
-        text-align: center;
-    }
-
-    .btn-primary, .btn-warning, .btn-danger {
-        font-size: 12px;
-        padding: 8px 12px;
-    }
-
-    .paginacao {
-        flex-wrap: wrap;
-        gap: 4px;
-        justify-content: center;
-    }
-
-    .paginacao a,
-    .paginacao span {
-        padding: 6px 10px;
-        font-size: 14px;
-    }
-}
-
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    /* background-color: #f4f6f8; */ /* Removido para o gradiente da tela de login funcionar */
-}
-
-.centralizado-vertical {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;  /* centraliza verticalmente */
-    align-items: center;      /* centraliza horizontalmente */
-    min-height: 100vh;
-    background-color: #f4f6f8; /* cor do fundo, se desejar */
-}
+.flash-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.flash-warning { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
 .modal {
     display: none;
@@ -364,126 +320,30 @@ html, body {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.2s;
 }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal-conteudo {
     background-color: white;
-    margin: 15% auto;
-    padding: 20px 30px;
-    border-radius: 10px;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 12px;
     max-width: 400px;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
-
-.modal-botes {
-    margin-top: 20px;
+.modal-botoes {
+    margin-top: 25px;
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 15px;
 }
 
-
-/* --- NOVOS ESTILOS PARA PAINEL DE SEGURANÇA --- */
-/* (Adicionados ao seu CSS original) */
-
-/* Wrapper para o login e painel de segurança */
-.login-box-wrapper {
-    width: 100%;
-    max-width: 400px; /* Mesma largura do .login-box */
+/* Responsividade básica */
+@media (max-width: 768px) {
+    .container { width: 95%; padding: 15px; margin: 20px auto; }
+    .tabela-moderna { display: block; overflow-x: auto; white-space: nowrap; }
+    .dashboard-header { flex-direction: column; align-items: stretch; text-align: center; }
+    .header-actions { justify-content: center; margin-top: 10px; }
 }
-
-/* Mensagens de Feedback (Flash) */
-.flash-msg {
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 500;
-    border: 1px solid transparent;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.flash-success { /* Modo Seguro (verde) */
-    background-color: #d4edda;
-    color: #155724;
-    border-color: #c3e6cb;
-}
-
-/*
- *
- * --- ALTERAÇÃO FEITA AQUI ---
- *
- */
-.flash-warning { /* Modo Inseguro (agora vermelho) */
-    background-color: #ffcdd2; /* Cor de fundo vermelha clara (do .erro-msg) */
-    color: #b71c1c; /* Cor do texto vermelha escura (do .erro-msg) */
-    border-color: #ef9a9a; /* Cor da borda vermelha mais suave */
-}
-
-/* Painel de controle de segurança */
-.security-box {
-    background-color: #f8f9fa; /* Um cinza bem claro */
-    padding: 25px;
-    border-radius: 14px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.05);
-    text-align: left;
-    margin-top: 20px;
-    box-sizing: border-box; /* Garante que o padding não quebre o layout */
-}
-
-.security-box p {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #495057;
-    font-size: 16px;
-}
-
-.mode-seguro {
-    font-weight: 700;
-    color: #28a745; /* Verde */
-}
-
-.mode-inseguro {
-    font-weight: 700;
-    color: #d32f2f; /* Vermelho (da sua classe .btn-danger) */
-}
-
-/* Botão secundário (para alternar modo) */
-.btn-secondary {
-    background-color: #6c757d;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.btn-secondary:hover {
-    background-color: #5a6268;
-}
-
-/* Caixa de instruções de teste */
-.info-box {
-    font-size: 14px;
-    color: #6c757d;
-    background-color: #e9ecef;
-    padding: 12px 15px;
-    border-radius: 8px;
-    margin-top: 20px;
-    line-height: 1.6;
-}
-.info-box p {
-    margin: 5px 0;
-}
-.info-box code {
-    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-    background-color: #dde1e4;
-    padding: 3px 6px;
-    border-radius: 4px;
-    color: #c7254e; /* Um rosa escuro para destaque */
-    font-size: 13px;
-}
-
