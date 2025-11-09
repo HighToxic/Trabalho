@@ -3,21 +3,19 @@
 <head>
     <title>Dashboard - SafeBankTech</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <div class="container" style="max-width: 90%; margin-top: 40px;">
-        <!-- CABEÇALHO ATUALIZADO COM BOTÃO SAIR -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <div class="brand" style="font-size: 28px;">
                 🛡️ SafeBankTech
             </div>
-            <!-- Wrapper para os botões da direita -->
             <div style="display: flex; gap: 10px;">
                 <a href="{{ url_for('novo_cliente') }}">
                     <button class="btn-primary">+ Novo Cliente</button>
                 </a>
                 <a href="{{ url_for('logout') }}">
-                    <!-- Usando btn-secondary para diferenciar (definido no seu style.css) -->
                     <button class="btn-secondary">Sair ➔</button> 
                 </a>
             </div>
@@ -43,26 +41,18 @@
             <tbody>
                 {% for c in clientes %}
                 <tr>
-                    <!--
-                        Nota: Estamos usando c[0], c[1] etc. porque
-                        o app.py usa conn.row_factory = sqlite3.Row.
-                        Para usar c['nome'], c['email'] etc.,
-                        teríamos que garantir que o app.py *sempre*
-                        use o row_factory em *todas* as consultas,
-                        o que é uma boa prática.
-                    -->
-                    <td>{{ c[0] }}</td>
-                    <td>{{ c[1] }}</td>
-                    <td>{{ c[2] }}</td>
-                    <td>R$ {{ c[3] }}</td>
+                    <td>{{ c['id'] }}</td>
+                    <td>{{ c['nome'] }}</td>
+                    <td>{{ c['email'] }}</td>
+                    <td>R$ {{ c['saldo'] }}</td>
                     <td>
-                        <a href="{{ url_for('editar_cliente', id=c[0], pagina=pagina) }}">
+                        <a href="{{ url_for('editar_cliente', id=c['id'], pagina=pagina) }}">
                             <button class="btn-warning">✏️</button>
                         </a>
                         <a href="#" 
                            class="btn-danger" 
-                           data-id="{{ c[0] }}" 
-                           data-url="{{ url_for('excluir_cliente', id=c[0], pagina=pagina) }}" 
+                           data-id="{{ c['id'] }}" 
+                           data-url="{{ url_for('excluir_cliente', id=c['id'], pagina=pagina) }}" 
                            onclick="abrirConfirmacao(this)">🗑️</a>
                     </td>
                 </tr>
@@ -81,14 +71,13 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
     <div id="modal-confirmacao" class="modal">
       <div class="modal-conteudo">
         <h3>❗ Confirmar Exclusão</h3>
         <p>Tem certeza que deseja excluir este cliente?</p>
         <div class="modal-botoes">
           <button onclick="confirmarExclusao()" class="btn-danger">Excluir</button>
-          <button onclick="fecharModal()" class="btn-warning">Cancelar</button>
+          <button onclick="fecharModal()" class="btn-secondary">Cancelar</button>
         </div>
       </div>
     </div>
