@@ -5,26 +5,39 @@
     <title>{{ acao }} Cliente - SafeBankTech</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 </head>
 <body>
     <div class="centralizado-vertical">
-        <div class="container">
+        <div class="container" style="max-width: 500px;">
             <div class="brand">SafeBankTech</div>
             <h2>{{ acao }} Cliente</h2>
+            
             <form method="post">
                 <div class="input-group">
-                    <input type="text" name="nome" placeholder="Nome completo" required value="{{ cliente[1] if cliente else '' }}">
+                    <!-- ATUALIZADO: Usando cliente['nome'] -->
+                    <input type="text" name="nome" placeholder="Nome completo" required 
+                           value="{{ cliente['nome'] if cliente else '' }}">
                 </div>
                 <div class="input-group">
-                    <input type="email" name="email" placeholder="E-mail" required value="{{ cliente[2] if cliente else '' }}">
+                    <!-- ATUALIZADO: Usando cliente['email'] -->
+                    <input type="email" name="email" placeholder="E-mail" required 
+                           value="{{ cliente['email'] if cliente else '' }}">
                 </div>
                 <div class="input-group">
-                    <input type="number" step="0.01" name="saldo" placeholder="Saldo (R$)" required value="{{ cliente[3] if cliente else '' }}">
+                    <!-- ATUALIZADO: Usando cliente['saldo'] -->
+                    <input type="number" step="0.01" name="saldo" placeholder="Saldo (R$)" required 
+                           value="{{ cliente['saldo'] if cliente else '' }}">
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                    <input type="submit" value="{{ acao }}" class="btn-primary full-width" style="margin-right: 10px;">
-                    <a href="{{ url_for('dashboard', pagina=request.args.get('pagina', 1)) }}" class="btn-warning full-width" style="text-align: center; padding: 12px;">Cancelar</a>
+                
+                <div style="display: flex; justify-content: space-between; margin-top: 30px; gap: 15px;">
+                    <input type="submit" value="{{ acao }}" class="btn-primary full-width">
+                    
+                    <!-- Botão Cancelar atualizado para usar btn-secondary (mais padrão) -->
+                    <a href="{{ url_for('dashboard', pagina=request.args.get('pagina', 1)) }}" 
+                       class="btn-secondary full-width" 
+                       style="text-align: center; padding: 12px; text-decoration: none; display: inline-block;">
+                       Cancelar
+                    </a>
                 </div>
             </form>
         </div>
