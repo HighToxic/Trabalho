@@ -12,7 +12,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "segredo-padrao-para-dev")
 
 # --- CONFIGURAÇÃO DO BANCO DE DADOS (PostgreSQL) ---
 # No Render, a variável DATABASE_URL é fornecida automaticamente.
-DATABASE_URL = os.environ.get("postgresql://safebank_db_user:QXfuyF2EMBY1Ot0Sd7qzUblIQBuQXk4T@dpg-d48cq39r0fns73fvp370-a/safebank_db")
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_db_connection():
     """Cria e retorna uma conexão com o banco PostgreSQL."""
@@ -243,3 +243,4 @@ if __name__ == '__main__':
     # mas para testes locais pode ser útil descomentar a linha abaixo:
     # init_db() 
     app.run(debug=True)
+
