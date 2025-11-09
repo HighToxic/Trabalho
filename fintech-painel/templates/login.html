@@ -3,20 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - SafeBankTech</title>
-    <!-- 1. Link para o seu arquivo style.css -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <div class="login-container">
-        <!-- Wrapper para centralizar o conteúdo e manter a largura -->
         <div class="login-box-wrapper">
 
-            <!-- 2. Bloco de Mensagens Flash (para feedback do botão) -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <!-- Mapeia a categoria (success, warning) para a classe CSS -->
                         {% set css_class = 'flash-warning' if category == 'warning' else 'flash-success' %}
                         <div class="flash-msg {{ css_class }}">
                             {{ message }}
@@ -25,20 +21,14 @@
                 {% endif %}
             {% endwith %}
 
-            <!-- 3. Sua Caixa de Login Original -->
             <div class="login-box">
                 <h2>🔐 SafeBankTech</h2>
                 <p class="login-subtitle">Painel administrativo</p>
 
-                <!-- Exibe o erro de 'Usuário ou senha inválidos!' -->
                 {% if erro %}
                     <div class="erro-msg">{{ erro }}</div>
                 {% endif %}
 
-                <!-- 
-                  Seu formulário de login. 
-                  Adicionei a 'action' para garantir que ele envie para a rota certa.
-                -->
                 <form method="POST" action="{{ url_for('login') }}">
                     <div class="input-group">
                         <input type="text" name="usuario" placeholder="Usuário" required>
@@ -46,40 +36,46 @@
                     <div class="input-group">
                         <input type="password" name="senha" placeholder="Senha" required>
                     </div>
-                    <button type="submit" class="btn-primary full-width">Entrar</button> <br><br><br>
-                    <a href="{{ url_for('google.login') }}" class="btn-secondary full-width" style="margin-top:20px;">🔑 Entrar com Google</a><!--botao entrar com google -->
-
+                    <button type="submit" class="btn-primary full-width">Entrar</button>
                 </form>
-            </div>
 
-            <!-- 4. Novo Painel de Controle de Segurança -->
+                <div class="login-divider">
+                    <hr>ou<hr>
+                </div>
+
+                <a href="{{ url_for('google.login') }}" style="text-decoration: none;">
+                    <button class="btn-google full-width">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" class="google-icon">
+                        Entrar com Google
+                    </button>
+                </a>
+                </div>
+
             <div class="security-box">
-                <p>
-                    Modo Atual: 
-                    <!-- Lê a variável da sessão para mostrar o modo -->
+                <div class="security-header">
+                    <span>Modo de Segurança:</span>
                     {% if session.security_mode == 'inseguro' %}
-                        <span class="mode-inseguro">Inseguro (Vulnerável a SQLi)</span>
+                        <span class="badge-inseguro">DESATIVADO ⚠️</span>
                     {% else %}
-                        <span class="mode-seguro">Seguro (Protegido)</span>
+                        <span class="badge-seguro">ATIVADO 🔒</span>
                     {% endif %}
-                </p>
+                </div>
                 
-                <!-- Novo formulário SÓ para o botão de alternar -->
                 <form action="{{ url_for('toggle_mode') }}" method="POST">
-                    <button type="submit" class="btn-secondary full-width">
-                        Alternar Modo de Segurança
+                    <button type="submit" class="btn-toggle full-width">
+                        Alternar Modo
                     </button>
                 </form>
 
-                <!-- Caixa de instruções para o teste -->
-                <div class="info-box">
-                    <strong>Como testar (em Modo Inseguro):</strong>
-                    <p>1. No campo "Usuário", digite:<br> <code>admin' --</code></p>
-                    <p>2. Na "Senha" escreva qualquer coisa.</p>
+                {% if session.security_mode == 'inseguro' %}
+                <div class="security-instructions">
+                    <strong>🎯 Como testar a falha:</strong>
+                    <p>Usuário: <code>admin' --</code></p>
+                    <p>Senha: <code>qualquercoisa</code></p>
                 </div>
+                {% endif %}
             </div>
 
-        </div> <!-- Fim do .login-box-wrapper -->
-    </div>
+        </div> </div>
 </body>
 </html>
