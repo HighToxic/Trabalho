@@ -1,11 +1,42 @@
+import os
+# Permite HTTP para testes locais do OAuth (remova em produção se tiver HTTPS)
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-import sqlite3
+import psycopg2
+from psycopg2.extras import RealDictCursor
+from flask_dance.contrib.google import make_google_blueprint, google
 
 app = Flask(__name__)
-# Chave secreta é essencial para a sessão funcionar
-app.secret_key = 'segredo-vulneravel' 
+app.secret_key = os.environ.get("SECRET_KEY", "segredo-padrao-para-dev")
 
-# Rota de login (GET e POST)
+# --- CONFIGURAÇÃO DO BANCO DE DADOS (PostgreSQL) ---
+# No Render, a variável DATABASE_URL é fornecida automaticamente.
+DATABASE_URL = os.environ.get("postgresql://safebank_db_user:QXfuyF2EMBY1Ot0Sd7qzUblIQBuQXk4T@dpg-d48cq39r0fns73fvp370-a/safebank_db")
+
+def get_db_connection():
+    """Cria e retorna uma conexão com o banco PostgreSQL."""
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        return conn
+    except Exception as e:
+        print(f"Erro ao conectar ao PostgreSQL: {e}")
+        return None
+
+# --- LOGIN COM GOOGLE (SSO) ---
+google_bp = make_google_blueprint(
+    client_id="481920209905-osru2ddlvvf017p6f40jj02al0cbu3eo.apps.googleusercontent.com",
+    client_secret="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",
+    redirect_to="dashboard",
+    scope=[
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "openid"
+    ]
+)
+app.register_blueprint(google_bp, url_prefix="/login")
+
+# --- ROTA PRINCIPAL (LOGIN) ---
 @app.route('/', methods=['GET', 'POST'])
 def login():
     erro = None
@@ -18,199 +49,197 @@ def login():
         username = request.form['usuario']
         password = request.form['senha']
 
-        conn = sqlite3.connect('database.db')
-        # Importante: row_factory para acessar colunas por nome
-        conn.row_factory = sqlite3.Row 
-        cursor = conn.cursor()
+        conn = get_db_connection()
+        if not conn:
+             return "Erro de conexão com o banco de dados.", 500
 
-        # Pega o modo de segurança da sessão
+        # RealDictCursor permite acessar colunas por nome (ex: user['username'])
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+
         mode = session.get('security_mode', 'seguro')
-        
         user = None
 
         if mode == 'inseguro':
-            # --- MODO INSEGURO (VULNERÁVEL) ---
+            # --- MODO INSEGURO (VULNERÁVEL A SQLi) ---
             try:
-                # AVISO: Vulnerabilidade de SQL Injection intencional
+                # AVISO: Vulnerabilidade intencional para fins educativos
                 query = "SELECT * FROM admin WHERE username='%s' AND password='%s'" % (username, password)
-                print(f"[MODO INSEGURO] Executando: {query}") # Log para debug
-                
-                # Alguns drivers/versões do sqlite podem bloquear isso
-                # Se der erro, pode ser necessário usar cursor.executescript(query)
-                cursor.execute(query) 
+                print(f"[MODO INSEGURO] Executando: {query}")
+                cursor.execute(query)
                 user = cursor.fetchone()
-
             except Exception as e:
-                print(f"Erro no modo inseguro: {e}")
+                print(f"Erro SQL (Inseguro): {e}")
                 erro = "Erro ao processar login (modo inseguro)."
 
         else:
             # --- MODO SEGURO (PROTEGIDO) ---
             try:
-                # Consulta parametrizada previne SQL Injection
-                query = "SELECT * FROM admin WHERE username=? AND password=?"
-                print(f"[MODO SEGURO] Executando: {query}") # Log para debug
-                
+                # Uso de placeholders (%s) previne SQL Injection
+                query = "SELECT * FROM admin WHERE username=%s AND password=%s"
+                print(f"[MODO SEGURO] Executando: {query}")
                 cursor.execute(query, (username, password))
                 user = cursor.fetchone()
-
             except Exception as e:
-                print(f"Erro no modo seguro: {e}")
+                print(f"Erro SQL (Seguro): {e}")
                 erro = "Erro ao processar login (modo seguro)."
 
+        cursor.close()
         conn.close()
 
         if user:
-            session['user'] = user['username'] # Salva o usuário na sessão
+            session['user'] = user['username']
             return redirect(url_for('dashboard'))
         else:
-            if not erro: # Só define erro se não houver erro de sistema
+            if not erro:
                 erro = 'Usuário ou senha inválidos!'
 
-    # Passa o erro E o modo atual para o template
     return render_template('login.html', erro=erro)
 
-# Rota para o botão "Alternar Modo"
+# --- ROTA PARA ALTERNAR MODO DE SEGURANÇA ---
 @app.route('/toggle_mode', methods=['POST'])
 def toggle_mode():
-    # Pega o modo atual e inverte
     if session.get('security_mode') == 'seguro':
         session['security_mode'] = 'inseguro'
-        # flash() envia uma mensagem para o próximo request
         flash('Modo Inseguro (Vulnerável a SQL Injection) ATIVADO!', 'warning')
     else:
         session['security_mode'] = 'seguro'
         flash('Modo de Segurança ATIVADO. Aplicação protegida.', 'success')
-
-    # Redireciona de volta para a página de login
     return redirect(url_for('login'))
 
-
+# --- DASHBOARD (PROTEGIDO) ---
 @app.route('/dashboard')
 def dashboard():
+    # Verifica login local OU login Google
     if 'user' not in session:
-        return redirect(url_for('login'))
+        if google.authorized:
+            try:
+                resp = google.get("/oauth2/v2/userinfo")
+                if resp.ok:
+                    user_info = resp.json()
+                    session['user'] = user_info['email']
+                else:
+                     return redirect(url_for("google.login"))
+            except:
+                return redirect(url_for("google.login"))
+        else:
+            return redirect(url_for('login')) # Redireciona para o login padrão se não estiver autenticado
 
     pagina = int(request.args.get('pagina', 1))
-    busca = request.args.get('busca', '').strip()  # pega o termo de busca da URL
+    busca = request.args.get('busca', '').strip()
     por_pagina = 25
     offset = (pagina - 1) * por_pagina
 
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row # Para acessar colunas por nome
-    cursor = conn.cursor()
+    conn = get_db_connection()
+    if not conn: return "Erro de banco de dados", 500
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
 
-    if busca:
-        # Conta total clientes filtrados pelo nome
-        cursor.execute("SELECT COUNT(*) FROM clientes WHERE nome LIKE ?", (f'%{busca}%',))
-        total_clientes = cursor.fetchone()[0]
+    try:
+        if busca:
+            cursor.execute("SELECT COUNT(*) FROM clientes WHERE nome ILIKE %s", (f'%{busca}%',))
+            total_clientes = cursor.fetchone()['count']
+            cursor.execute("SELECT * FROM clientes WHERE nome ILIKE %s ORDER BY id LIMIT %s OFFSET %s", (f'%{busca}%', por_pagina, offset))
+        else:
+            cursor.execute("SELECT COUNT(*) FROM clientes")
+            total_clientes = cursor.fetchone()['count']
+            cursor.execute("SELECT * FROM clientes ORDER BY id LIMIT %s OFFSET %s", (por_pagina, offset))
 
-        # Pega clientes filtrados para a página atual
-        cursor.execute("SELECT * FROM clientes WHERE nome LIKE ? LIMIT ? OFFSET ?", (f'%{busca}%', por_pagina, offset))
-    else:
-        # Conta total clientes sem filtro
-        cursor.execute("SELECT COUNT(*) FROM clientes")
-        total_clientes = cursor.fetchone()[0]
-
-        # Pega clientes sem filtro para a página atual
-        cursor.execute("SELECT * FROM clientes LIMIT ? OFFSET ?", (por_pagina, offset))
-
-    clientes = cursor.fetchall()
-    total_paginas = (total_clientes + por_pagina - 1) // por_pagina
-
-    conn.close()
+        clientes = cursor.fetchall()
+        total_paginas = (total_clientes + por_pagina - 1) // por_pagina
+    except Exception as e:
+        print(f"Erro no dashboard: {e}")
+        clientes = []
+        total_paginas = 1
+    finally:
+        cursor.close()
+        conn.close()
 
     return render_template('dashboard.html', clientes=clientes, pagina=pagina, total_paginas=total_paginas, busca=busca)
 
+# --- CRUD CLIENTES ---
 @app.route('/novo', methods=['GET', 'POST'])
 def novo_cliente():
-    if 'user' not in session:
-        return redirect(url_for('login'))
+    if 'user' not in session: return redirect(url_for('login'))
 
     if request.method == 'POST':
-        nome = request.form['nome']
-        email = request.form['email']
-        saldo = request.form['saldo']
-
-        conn = sqlite3.connect('database.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO clientes (nome, email, saldo) VALUES (?, ?, ?)", (nome, email, saldo))
+        cursor.execute("INSERT INTO clientes (nome, email, saldo) VALUES (%s, %s, %s)", 
+                       (request.form['nome'], request.form['email'], request.form['saldo']))
         conn.commit()
+        cursor.close()
         conn.close()
-        return redirect(url_for('dashboard', pagina=request.args.get('pagina', 1)))
+        return redirect(url_for('dashboard'))
 
     return render_template('form_cliente.html', acao='Criar', cliente=None)
 
 @app.route('/editar/<int:id>', methods=['GET', 'POST'])
 def editar_cliente(id):
-    if 'user' not in session:
-        return redirect(url_for('login'))
+    if 'user' not in session: return redirect(url_for('login'))
 
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row # Para acessar colunas por nome
-    cursor = conn.cursor()
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
 
     if request.method == 'POST':
-        nome = request.form['nome']
-        email = request.form['email']
-        saldo = request.form['saldo']
-        cursor.execute("UPDATE clientes SET nome=?, email=?, saldo=? WHERE id=?", (nome, email, saldo, id))
+        cursor.execute("UPDATE clientes SET nome=%s, email=%s, saldo=%s WHERE id=%s", 
+                       (request.form['nome'], request.form['email'], request.form['saldo'], id))
         conn.commit()
+        cursor.close()
         conn.close()
         return redirect(url_for('dashboard', pagina=request.args.get('pagina', 1)))
 
-    cursor.execute("SELECT * FROM clientes WHERE id=?", (id,))
+    cursor.execute("SELECT * FROM clientes WHERE id=%s", (id,))
     cliente = cursor.fetchone()
+    cursor.close()
     conn.close()
     return render_template('form_cliente.html', acao='Editar', cliente=cliente)
 
 @app.route('/excluir/<int:id>')
 def excluir_cliente(id):
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
-    conn = sqlite3.connect('database.db')
+    if 'user' not in session: return redirect(url_for('login'))
+    conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM clientes WHERE id=?", (id,))
+    cursor.execute("DELETE FROM clientes WHERE id=%s", (id,))
     conn.commit()
+    cursor.close()
     conn.close()
-    return redirect(url_for('dashboard', pagina=request.args.get('pagina', 1)))
+    return redirect(url_for('dashboard'))
 
-# --- NOVA ROTA DE LOGOUT ADICIONADA AQUI ---
+# --- LOGOUT ---
 @app.route('/logout')
 def logout():
-    # Remove o 'user' da sessão, efetivamente deslogando ele
-    session.pop('user', None)
-    # Envia uma mensagem de feedback para a tela de login
+    session.clear() # Limpa toda a sessão (incluindo token do Google)
     flash('Você saiu da sua conta.', 'success')
-    # Redireciona o usuário para a rota de login
     return redirect(url_for('login'))
 
-# Função para inicializar o banco de dados
+# --- INICIALIZAÇÃO DO BANCO (OPCIONAL) ---
 def init_db():
-    conn = sqlite3.connect('database.db')
+    conn = get_db_connection()
+    if not conn: return
     cursor = conn.cursor()
+    # Cria tabelas se não existirem (SERIAL é o AUTO_INCREMENT do Postgres)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS admin (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT,
-            password TEXT
+            id SERIAL PRIMARY KEY,
+            username VARCHAR(255) UNIQUE NOT NULL,
+            password VARCHAR(255) NOT NULL
         )
     ''')
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS clientes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
-            email TEXT,
-            saldo REAL
+            id SERIAL PRIMARY KEY,
+            nome VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
+            saldo DECIMAL(10, 2) NOT NULL
         )
     ''')
-    # Insere o admin apenas se ele não existir
-    cursor.execute("INSERT OR IGNORE INTO admin (id, username, password) VALUES (1, 'admin', '123')")
+    # Tenta inserir admin (ON CONFLICT DO NOTHING evita erro se já existir)
+    cursor.execute("INSERT INTO admin (username, password) VALUES ('admin', '123') ON CONFLICT DO NOTHING")
     conn.commit()
+    cursor.close()
     conn.close()
 
 if __name__ == '__main__':
-    init_db()
+    # No Render, não chamamos init_db() aqui a cada boot, 
+    # mas para testes locais pode ser útil descomentar a linha abaixo:
+    # init_db() 
     app.run(debug=True)
-
