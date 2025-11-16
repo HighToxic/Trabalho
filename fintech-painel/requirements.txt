@@ -13,3 +13,4 @@ psycopg2-binary==2.9.11
 flask_dance==7.1.0
 protobuf==6.33.1
 PyJWT==2.10.1
+google-auth
